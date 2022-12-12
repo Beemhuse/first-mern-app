@@ -3,15 +3,20 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 
+
+if (process.env.NODE_ENV !== "production") {
+    // console.log(process.env.DB_HOST)
+    require("dotenv").config();
+  }
 const app = express()
 // bodyparser middleware
 
 app.use(bodyParser.json());
 
-const items = require('./routes/api/items')
+const books = require('./routes/api/books')
 
 // DB config
-const db = require('./config/keys').mongoURI
+const db = process.env.DB_HOST
 
 // connect to mongo
 mongoose.set('strictQuery', true);
@@ -19,10 +24,11 @@ mongoose
 .connect(db).then(()=> console.log('MongoDb connected ...'))
 .catch(err => console.log(err))
 
-const port = process.env.PORT || 5000;
+// port
+const port = process.env.PORT;
 
 // use routes
-app.use('/api/items', items);
+app.use('/api/books', books);
 
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
